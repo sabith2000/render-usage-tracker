@@ -1,5 +1,6 @@
 import express from 'express';
 import Entry from '../models/Entry.js';
+import { logger } from '../utils/logger.js';
 
 const router = express.Router();
 
@@ -17,7 +18,7 @@ function parseDateToSortable(dateStr) {
  * Returns all entries sorted chronologically.
  */
 router.get('/', async (req, res) => {
-    console.log('   [GET] Fetching all entries...');
+    logger.info('   [GET] Fetching all entries...');
     try {
         const entries = await Entry.find().lean();
 
@@ -26,10 +27,10 @@ router.get('/', async (req, res) => {
             (a, b) => parseDateToSortable(a.date).localeCompare(parseDateToSortable(b.date))
         );
 
-        console.log(`   ✅ Found ${entries.length} entries.`);
+        logger.info(`   ✅ Found ${entries.length} entries.`);
         res.json(entries);
     } catch (error) {
-        console.error(`   ❌ Error fetching entries: ${error.message}`);
+        logger.error(`   ❌ Error fetching entries: ${error.message}`);
         res.status(500).json({ message: 'Failed to fetch entries', error: error.message });
     }
 });
@@ -40,28 +41,28 @@ router.get('/', async (req, res) => {
  */
 router.post('/', async (req, res) => {
     const { date, totalHours } = req.body;
-    console.log(`   [POST] Attempting to create entry: Date=${date}, Hours=${totalHours}`);
+    logger.info(`   [POST] Attempting to create entry: Date=${date}, Hours=${totalHours}`);
 
     try {
         // Check for duplicate date
         const existing = await Entry.findOne({ date });
         if (existing) {
-            console.warn(`   ⚠️ Duplicate entry prevented for date: ${date}`);
+            logger.warn(`   ⚠️ Duplicate entry prevented for date: ${date}`);
             return res.status(400).json({ message: `Entry for ${date} already exists` });
         }
 
         const entry = new Entry({ date, totalHours: Number(totalHours) });
         const saved = await entry.save();
 
-        console.log(`   ✅ Entry created successfully! ID: ${saved._id}`);
+        logger.info(`   ✅ Entry created successfully! ID: ${saved._id}`);
         res.status(201).json(saved);
     } catch (error) {
         if (error.name === 'ValidationError') {
             const messages = Object.values(error.errors).map((e) => e.message);
-            console.warn(`   ⚠️ Validation Error: ${messages.join(', ')}`);
+            logger.warn(`   ⚠️ Validation Error: ${messages.join(', ')}`);
             return res.status(400).json({ message: messages.join(', ') });
         }
-        console.error(`   ❌ Error creating entry: ${error.message}`);
+        logger.error(`   ❌ Error creating entry: ${error.message}`);
         res.status(500).json({ message: 'Failed to create entry', error: error.message });
     }
 });
@@ -72,14 +73,14 @@ router.post('/', async (req, res) => {
  */
 router.put('/:id', async (req, res) => {
     const { date, totalHours } = req.body;
-    console.log(`   [PUT] Updating entry ${req.params.id}: Date=${date}, Hours=${totalHours}`);
+    logger.info(`   [PUT] Updating entry ${req.params.id}: Date=${date}, Hours=${totalHours}`);
 
     try {
         // Check for duplicate date (exclude current entry)
         if (date) {
             const existing = await Entry.findOne({ date, _id: { $ne: req.params.id } });
             if (existing) {
-                console.warn(`   ⚠️ Update failed: Date ${date} is already taken by another entry.`);
+                logger.warn(`   ⚠️ Update failed: Date ${date} is already taken by another entry.`);
                 return res.status(400).json({ message: `Entry for ${date} already exists` });
             }
         }
@@ -91,19 +92,19 @@ router.put('/:id', async (req, res) => {
         );
 
         if (!updated) {
-            console.warn(`   ⚠️ Entry not found for update: ${req.params.id}`);
+            logger.warn(`   ⚠️ Entry not found for update: ${req.params.id}`);
             return res.status(404).json({ message: 'Entry not found' });
         }
 
-        console.log(`   ✅ Entry updated successfully!`);
+        logger.info(`   ✅ Entry updated successfully!`);
         res.json(updated);
     } catch (error) {
         if (error.name === 'ValidationError') {
             const messages = Object.values(error.errors).map((e) => e.message);
-            console.warn(`   ⚠️ Validation Error: ${messages.join(', ')}`);
+            logger.warn(`   ⚠️ Validation Error: ${messages.join(', ')}`);
             return res.status(400).json({ message: messages.join(', ') });
         }
-        console.error(`   ❌ Error updating entry: ${error.message}`);
+        logger.error(`   ❌ Error updating entry: ${error.message}`);
         res.status(500).json({ message: 'Failed to update entry', error: error.message });
     }
 });
@@ -113,18 +114,18 @@ router.put('/:id', async (req, res) => {
  * Delete an entry.
  */
 router.delete('/:id', async (req, res) => {
-    console.log(`   [DELETE] Request to delete entry: ${req.params.id}`);
+    logger.info(`   [DELETE] Request to delete entry: ${req.params.id}`);
 
     try {
         const deleted = await Entry.findByIdAndDelete(req.params.id);
         if (!deleted) {
-            console.warn(`   ⚠️ Entry not found for deletion.`);
+            logger.warn(`   ⚠️ Entry not found for deletion.`);
             return res.status(404).json({ message: 'Entry not found' });
         }
-        console.log(`   ✅ Entry deleted successfully.`);
+        logger.info(`   ✅ Entry deleted successfully.`);
         res.json({ message: 'Entry deleted successfully' });
     } catch (error) {
-        console.error(`   ❌ Error deleting entry: ${error.message}`);
+        logger.error(`   ❌ Error deleting entry: ${error.message}`);
         res.status(500).json({ message: 'Failed to delete entry', error: error.message });
     }
 });

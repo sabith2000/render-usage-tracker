@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [0.0.5-dev] - 2026-02-14
+
+### Changed (Phase 5 — Refined Logging)
+- **Logging:**
+  - Implemented selective logging: Database/Port status to Console + File.
+  - All other verbose logs (API requests, CRUD details) to File ONLY (`server/logs/server.log`).
+  - Reduces console clutter while maintaining detailed audit trail.
+
+---
+
 ## [0.0.4-dev] - 2026-02-14
 
 ### Changed (Phase 4 — Polish & Fixes)

@@ -27,28 +27,36 @@ function writeToFile(text) {
     });
 }
 
-/**
- * Intercepts console methods to write to file as well as stdout/stderr.
- */
-export function setupLogging() {
-    const originalLog = console.log;
-    const originalError = console.error;
-    const originalWarn = console.warn;
-
-    console.log = (...args) => {
-        originalLog.apply(console, args);
-        writeToFile(formatMessage('INFO', args));
-    };
-
-    console.error = (...args) => {
-        originalError.apply(console, args);
-        writeToFile(formatMessage('ERROR', args));
-    };
-
-    console.warn = (...args) => {
-        originalWarn.apply(console, args);
-        writeToFile(formatMessage('WARN', args));
-    };
-
-    console.log('📝 Logging initialized. Writing to:', logFile);
+function logToConsole(fn, args) {
+    fn.apply(console, args);
 }
+
+/**
+ * Custom logger to separate console output from file logs.
+ * - info/warn: File only (to reduce clutter)
+ * - system: File + Console (for DB/Port status)
+ * - error: File + Console (for critical errors)
+ */
+export const logger = {
+    // Detailed logs -> File only
+    info: (...args) => {
+        writeToFile(formatMessage('INFO', args));
+    },
+
+    // Warnings -> File only
+    warn: (...args) => {
+        writeToFile(formatMessage('WARN', args));
+    },
+
+    // Critical systems (DB/Port) -> Console + File
+    system: (...args) => {
+        writeToFile(formatMessage('SYSTEM', args));
+        logToConsole(console.log, args);
+    },
+
+    // Errors -> Console + File
+    error: (...args) => {
+        writeToFile(formatMessage('ERROR', args));
+        logToConsole(console.error, args);
+    }
+};
