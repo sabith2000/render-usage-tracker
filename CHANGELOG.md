@@ -6,6 +6,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [0.0.6-dev] - 2026-02-14
+
+### Changed (Phase 6 — UI/UX Overhaul & Pagination)
+- **Dependencies:** Added `react-datepicker`, `lucide-react`, `date-fns`.
+- **UI Components:**
+  - **Icons:** Replaced all SVGs with **Lucide React** icons (cleaner, consistent).
+  - **Fonts:** Enforced **Inter** font everywhere (removed `font-mono` from numeric tables).
+  - **Date Picker:** Replaced native input with **React DatePicker** (custom dark theme).
+  - **Dropdown:** Built custom **MonthSelector** listbox (replaced native select).
+  - **Actions:** Edit/Delete buttons are now **always visible** with improved styling.
+- **Features:**
+  - **Pagination:** Added client-side pagination to `EntriesTable` (10 items/page).
+  - **Precision:** Added detailed decimal view to "Remaining Hours" (e.g., `(645.58 hrs)`).
+  - **Progress Bar:** Fixed visual issue for 0-value start state.
+
+---
+
 ## [0.0.5-dev] - 2026-02-14
 
 ### Changed (Phase 5 — Refined Logging)

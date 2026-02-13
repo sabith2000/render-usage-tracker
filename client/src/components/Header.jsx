@@ -1,25 +1,30 @@
+import { Activity } from 'lucide-react';
+
+/**
+ * Header — Top navigation bar with logo and title.
+ * Gradient text effect for the brand name.
+ */
 function Header() {
     return (
-        <header className="relative overflow-hidden">
-            {/* Gradient background */}
-            <div className="absolute inset-0 bg-gradient-to-r from-brand-900/50 via-surface-900 to-brand-900/30" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-brand-600/10 via-transparent to-transparent" />
-
-            <div className="relative max-w-5xl mx-auto px-4 py-6 sm:py-8">
-                <div className="flex items-center justify-between">
+        <header className="sticky top-0 z-50 bg-surface-950/80 backdrop-blur-md border-b border-surface-800">
+            <div className="container mx-auto px-4 max-w-5xl h-16 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                    <div className="p-2 bg-gradient-to-br from-brand-500 to-indigo-600 rounded-lg shadow-lg shadow-brand-500/20">
+                        <Activity className="w-6 h-6 text-white" />
+                    </div>
                     <div>
-                        <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-brand-300 to-brand-500 bg-clip-text text-transparent">
-                            Render Free Usage Monitor
+                        <h1 className="text-xl font-bold tracking-tight text-white">
+                            Render
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-indigo-400 ml-1.5">
+                                Monitor
+                            </span>
                         </h1>
-                        <p className="text-surface-400 text-sm mt-1">
-                            Track your monthly free instance hours (750 hrs/month)
+                        <p className="text-[10px] text-surface-400 font-medium tracking-wide uppercase hidden sm:block">
+                            Free Instance Usage Tracker
                         </p>
                     </div>
                 </div>
             </div>
-
-            {/* Bottom border glow */}
-            <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-brand-500/40 to-transparent" />
         </header>
     );
 }

@@ -1,3 +1,5 @@
+import { FileQuestion } from 'lucide-react';
+
 /**
  * EmptyState — shown when there are no entries for the selected month.
  *
@@ -5,18 +7,16 @@
  */
 function EmptyState({ monthLabel }) {
     return (
-        <div className="card p-8 text-center animate-fade-in">
-            <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-brand-500/10 mb-4">
-                <svg className="w-7 h-7 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
+        <div className="card p-12 text-center animate-fade-in border-dashed border-2 border-surface-700 bg-surface-800/20">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-surface-800 mb-4 shadow-inner">
+                <FileQuestion className="w-8 h-8 text-surface-400" />
             </div>
-            <h3 className="text-lg font-semibold text-surface-100 mb-2">
-                No entries yet
+            <h3 className="text-lg font-semibold text-surface-200 mb-2">
+                No Data Found
             </h3>
-            <p className="text-surface-400 text-sm max-w-md mx-auto">
-                No usage data recorded for <span className="text-surface-200 font-medium">{monthLabel}</span>.
-                Add your first entry above to start tracking.
+            <p className="text-surface-400 max-w-sm mx-auto">
+                There are no usage entries for <span className="text-brand-300 font-medium">{monthLabel}</span>.
+                Start by adding a new entry above.
             </p>
         </div>
     );
