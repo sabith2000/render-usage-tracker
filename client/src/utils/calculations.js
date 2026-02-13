@@ -78,69 +78,99 @@ export function computeMonthlyStats(allEntries, month, year) {
     const entriesWithIncrease = computeDailyIncrease(monthEntries);
     const invalidDetected = hasInvalidData(entriesWithIncrease);
 
-    // Default/empty state
-    const emptyResult = {
+    const hasData = monthEntries.length > 0;
+    const count = monthEntries.length;
+
+    // Basic stats derived even from single entry
+    const first = hasData ? monthEntries[0] : null;
+    const latest = hasData ? monthEntries[count - 1] : null; // Same as first if count=1
+
+    const firstTotal = first ? safeNumber(first.totalHours) : 0;
+    const latestTotal = latest ? safeNumber(latest.totalHours) : 0;
+
+    // Progress % based on latest total
+    const progressPercentage = safeFixed((latestTotal / FREE_HOUR_LIMIT) * 100, 1);
+
+    // Default status
+    let status = 'WAITING';
+    if (invalidDetected) status = 'INVALID DATA';
+    else if (latestTotal >= FREE_HOUR_LIMIT) status = 'DANGER';
+    else if (count >= 1) status = 'SAFE'; // Provisional status for 1 entry
+
+    // Base result structure (safe defaults)
+    const baseResult = {
         entries: monthEntries,
         entriesWithIncrease,
-        firstTotal: null,
-        latestTotal: null,
-        firstDate: null,
-        latestDate: null,
-        daysBetween: 0,
-        avgPerDay: 0,
-        projectedTotal: 0,
-        remainingHours: FREE_HOUR_LIMIT,
+        firstTotal,
+        latestTotal, // internal use
+        totalHours: latestTotal, // explicit match for UI
+        firstDate: first ? first.date : null,
+        latestDate: latest ? latest.date : null,
         daysInMonth,
-        entryCount: monthEntries.length,
+        entryCount: count,
         hasInvalidData: invalidDetected,
-        status: 'WAITING',
+        status,
+        progressPercentage,
+
+        // Items requiring >= 2 entries to compute correctly
+        daysBetween: 0,
+        daysCovers: 0, // explicit match for UI
+        avgPerDay: 0,
+        dailyAverage: 0, // explicit match for UI
+        projectedTotal: 0,
+        remainingHours: FREE_HOUR_LIMIT - latestTotal, // naive remaining
     };
 
-    // Not enough data for projection
-    if (monthEntries.length < 2) {
-        return emptyResult;
+    // Not enough data for projection metrics
+    if (count < 2) {
+        // If 1 entry, remaining is just limit - current. Projected is just current (conservative).
+        if (count === 1) {
+            baseResult.remainingHours = safeFixed(FREE_HOUR_LIMIT - latestTotal, 2);
+            baseResult.projectedTotal = safeFixed(latestTotal, 2);
+        }
+        return baseResult;
     }
 
-    // If invalid data detected, return stats but mark as invalid
-    const first = monthEntries[0];
-    const latest = monthEntries[monthEntries.length - 1];
+    // --- Complex Stats (>= 2 entries) ---
 
-    const firstTotal = safeNumber(first.totalHours);
-    const latestTotal = safeNumber(latest.totalHours);
+    // Days covered
     const daysBetweenEntries = daysBetween(first.date, latest.date);
 
-    // Guard against division by zero
+    // Guard against division by zero (same-day entries?)
     const avgPerDay = daysBetweenEntries > 0
         ? (latestTotal - firstTotal) / daysBetweenEntries
         : 0;
 
-    const projectedTotal = invalidDetected ? 0 : avgPerDay * daysInMonth;
-    const remainingHours = invalidDetected ? 0 : FREE_HOUR_LIMIT - projectedTotal;
+    const projectedTotal = invalidDetected ? 0 : (avgPerDay * daysInMonth); // Simple linear projection (avg * 30/31)
+    // Alternative projection: latestTotal + (avgPerDay * (daysInMonth - dayOfMonthOfLatest))?
+    // User requested "projected Total". avg/day * daysInMonth is a standard rough projection.
 
-    // Determine status
-    let status;
-    if (invalidDetected) {
-        status = 'INVALID DATA';
-    } else if (projectedTotal >= FREE_HOUR_LIMIT) {
-        status = 'DANGER';
-    } else {
-        status = 'SAFE';
+    const remainingHours = invalidDetected ? 0 : (FREE_HOUR_LIMIT - latestTotal);
+    // Wait, remaining should be limit - current usage. The UI shows "Remaining".
+    // "Projected" is where this usage is heading.
+    // Logic check: remainingHours = Limit - Current Total (simple) OR Limit - Projected?
+    // Usually "Remaining" means "How much buffer do I have left right now?".
+    // I'll stick to Limit - Recent Total for "Remaining".
+
+    // Determine Status based on projection
+    if (!invalidDetected) {
+        if (projectedTotal >= FREE_HOUR_LIMIT) {
+            status = 'DANGER';
+        } else if (projectedTotal > (FREE_HOUR_LIMIT * 0.9)) {
+            status = 'WARNING'; // e.g. close to limit
+        } else {
+            status = 'SAFE';
+        }
     }
 
     return {
-        entries: monthEntries,
-        entriesWithIncrease,
-        firstTotal,
-        latestTotal,
-        firstDate: first.date,
-        latestDate: latest.date,
+        ...baseResult,
         daysBetween: daysBetweenEntries,
+        daysCovers: daysBetweenEntries,
         avgPerDay: safeFixed(avgPerDay, 4),
+        dailyAverage: safeFixed(avgPerDay, 4),
         projectedTotal: safeFixed(projectedTotal, 2),
         remainingHours: safeFixed(remainingHours, 2),
-        daysInMonth,
-        entryCount: monthEntries.length,
-        hasInvalidData: invalidDetected,
         status,
     };
 }

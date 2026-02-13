@@ -37,8 +37,10 @@ function EntriesTable({ entriesWithIncrease, onEdit, onDelete }) {
                                     </td>
                                     <td className={`py-4 px-6 text-right tabular-nums font-mono font-medium ${isInvalid ? 'text-danger-400' : 'text-success-400'
                                         }`}>
-                                        {isInvalid ? '⚠ ' : '+'}
-                                        {entry.dailyIncrease.toFixed(2)}
+                                        {isInvalid ? '⚠ ' : (entry.dailyIncrease > 0 ? '+' : '')}
+                                        {typeof entry.dailyIncrease === 'number'
+                                            ? entry.dailyIncrease.toFixed(2)
+                                            : entry.dailyIncrease}
                                     </td>
                                     <td className="py-4 px-6 text-right text-sm font-medium">
                                         <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
