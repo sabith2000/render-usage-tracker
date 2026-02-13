@@ -121,7 +121,7 @@ function MonthlyStatsCard({ stats, monthLabel }) {
                 </div>
 
                 <div className="flex justify-between text-xs text-surface-500 mt-1 font-sans">
-                    <span>Start</span>
+                    <span>0 hrs</span>
                     <span>{750} hrs Limit</span>
                 </div>
             </div>

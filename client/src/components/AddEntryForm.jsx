@@ -4,21 +4,16 @@ import { Calendar as CalendarIcon, Save, X, AlertCircle } from 'lucide-react';
 import { validateEntry } from '../utils/validation.js';
 import { getTodayIST, parseDate, formatDate } from '../utils/dateHelpers.js';
 
-// Import local CSS if needed, but usually we import global CSS in main.jsx
-// For now, we'll assume global import or add it here if it doesn't break HMR.
-// import "react-datepicker/dist/react-datepicker.css"; 
-
-/**
 /**
  * AddEntryForm — Form to add or edit an entry.
  * Now uses react-datepicker for robust date selection.
  *
  * @param {{
- *   onAdd: (entry: object) => Promise<void>,
- *   onUpdate: (id: string, entry: object) => Promise<void>,
- *   editEntry: object|null,
- *   onCancelEdit: () => void,
- *   entries: Array
+ * onAdd: (entry: object) => Promise<void>,
+ * onUpdate: (id: string, entry: object) => Promise<void>,
+ * editEntry: object|null,
+ * onCancelEdit: () => void,
+ * entries: Array
  * }} props
  */
 function AddEntryForm({ onAdd, onUpdate, editEntry, onCancelEdit, entries = [] }) {
@@ -60,6 +55,7 @@ function AddEntryForm({ onAdd, onUpdate, editEntry, onCancelEdit, entries = [] }
         try {
             if (editEntry) {
                 await onUpdate(editEntry._id, form);
+                onCancelEdit(); // FIX 1: Exit edit mode on success
             } else {
                 await onAdd(form);
                 // Reset form on success (keep today's date)
@@ -124,7 +120,10 @@ function AddEntryForm({ onAdd, onUpdate, editEntry, onCancelEdit, entries = [] }
                                 } text-surface-100 rounded-lg pl-10 pr-4 py-2.5 shadow-sm transition-all focus:ring-2 outline-none font-sans relative z-10`}
                             placeholderText="Select date"
                             showPopperArrow={false}
-                            popperClassName="z-[9999]" // Changed to high z-index
+                            // FIX: Portal and fixed strategy to escape container clipping/stacking context
+                            portalId="root"
+                            popperProps={{ strategy: "fixed" }}
+                            popperClassName="z-[9999]"
                             popperPlacement="bottom-start"
                         />
                         <CalendarIcon className="w-5 h-5 text-surface-400 absolute left-3 top-3 pointer-events-none z-20" />
@@ -165,7 +164,10 @@ function AddEntryForm({ onAdd, onUpdate, editEntry, onCancelEdit, entries = [] }
                 </div>
 
                 {/* Submit Button */}
-                <div className="flex items-end">
+                <div className="space-y-2">
+                    <label className="block text-sm font-medium text-transparent select-none">
+                        Action
+                    </label>
                     <button
                         type="submit"
                         disabled={isSubmitting}
@@ -228,15 +230,40 @@ function AddEntryForm({ onAdd, onUpdate, editEntry, onCancelEdit, entries = [] }
           background-color: #334155 !important; /* surface-700 */
           border-radius: 0.375rem !important;
         }
-        .react-datepicker__day--selected, .react-datepicker__day--keyboard-selected {
+        
+        /* FIX: Only apply the solid purple background to the TRULY selected date */
+        .react-datepicker__day--selected {
           background-color: #6366f1 !important; /* brand-500 */
           color: white !important;
           border-radius: 0.375rem !important;
         }
+        
+        /* FIX: Keyboard selected (ghost cursor) should NOT have a background */
+        .react-datepicker__day--keyboard-selected {
+          background-color: transparent !important;
+          color: inherit !important;
+          border-radius: 0.375rem !important;
+        }
+        /* Ensure keyboard selected items still show hover state */
+        .react-datepicker__day--keyboard-selected:hover {
+           background-color: #334155 !important;
+        }
+        /* If item is both keyboard selected AND actually selected, keep it purple */
+        .react-datepicker__day--selected.react-datepicker__day--keyboard-selected {
+          background-color: #6366f1 !important;
+          color: white !important;
+        }
+
         .react-datepicker__day--today {
           font-weight: bold !important;
           color: #818cf8 !important; /* brand-400 */
         }
+        
+        /* FIX: Ensure text is white if day is BOTH today AND selected */
+        .react-datepicker__day--selected.react-datepicker__day--today {
+          color: #ffffff !important;
+        }
+        
         .react-datepicker__day--disabled {
           color: #475569 !important; /* surface-600 */
         }

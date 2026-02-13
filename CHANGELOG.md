@@ -6,6 +6,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [0.0.8-dev] - 2026-02-14
+
+### Changed (Phase 6 Polish 2 — Manual Fixes)
+- **Date Picker (AddEntryForm):**
+  - **Solved Overlap:** Implemented `portalId="root"` and `strategy="fixed"` to render calendar outside stacking context.
+  - **Styling:** Fixed "Ghost Selection" highlight issues; ensured "Today" text is white when selected.
+- **UI Layout:**
+  - **Button Alignment:** Added invisible "Action" label to align Add/Edit button with input fields.
+- **Logic:**
+  - **Edit Mode:** Form now correctly resets to "Add Mode" after successful update (`onCancelEdit` trigger).
+- **Monthly Stats:**
+  - **Labels:** Changed "Start" to "0 hrs" for clarity on progress bar scale.
+
+---
+
 ## [0.0.7-dev] - 2026-02-14
 
 ### Changed (Phase 6 Polish & Fixes)
