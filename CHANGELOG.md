@@ -6,6 +6,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [0.0.7-dev] - 2026-02-14
+
+### Changed (Phase 6 Polish & Fixes)
+- **UI:**
+  - **Date Picker:** Improved z-index handling to reduce overlap (desktop).
+  - **Clear All:** Button is now **Solid Red** with trash icon for better "danger" visibility.
+  - **Inputs:** Removed annoying spinner arrows from number inputs.
+  - **Progress Bar:** Clarified labels ("Start", "Limit") to avoid confusion.
+- **Logic:**
+  - **Validation:** Implemented **strict cumulative validation**. Users cannot enter a total lower than the previous entry's total.
+
+### Known Issues
+- **Date Picker:** Overlap with Month Selector may still occur on some screen sizes/modes.
+
+---
+
 ## [0.0.6-dev] - 2026-02-14
 
 ### Changed (Phase 6 — UI/UX Overhaul & Pagination)
@@ -20,7 +36,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   - **Pagination:** Added client-side pagination to `EntriesTable` (10 items/page).
   - **Precision:** Added detailed decimal view to "Remaining Hours" (e.g., `(645.58 hrs)`).
   - **Progress Bar:** Fixed visual issue for 0-value start state.
-  - **Polish:** Fixed DatePicker overlap, improved Clear All button, and enhanced Status Badge visibility.
 
 ---
 

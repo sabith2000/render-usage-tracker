@@ -9,6 +9,7 @@ import { getTodayIST, parseDate, formatDate } from '../utils/dateHelpers.js';
 // import "react-datepicker/dist/react-datepicker.css"; 
 
 /**
+/**
  * AddEntryForm — Form to add or edit an entry.
  * Now uses react-datepicker for robust date selection.
  *
@@ -17,9 +18,10 @@ import { getTodayIST, parseDate, formatDate } from '../utils/dateHelpers.js';
  *   onUpdate: (id: string, entry: object) => Promise<void>,
  *   editEntry: object|null,
  *   onCancelEdit: () => void,
+ *   entries: Array
  * }} props
  */
-function AddEntryForm({ onAdd, onUpdate, editEntry, onCancelEdit }) {
+function AddEntryForm({ onAdd, onUpdate, editEntry, onCancelEdit, entries = [] }) {
     const [form, setForm] = useState({
         date: getTodayIST(),
         totalHours: '',
@@ -48,7 +50,7 @@ function AddEntryForm({ onAdd, onUpdate, editEntry, onCancelEdit }) {
         e.preventDefault();
 
         // Validate
-        const { valid, errors: newErrors } = validateEntry(form);
+        const { valid, errors: newErrors } = validateEntry(form, entries, editEntry?._id);
         if (!valid) {
             setErrors(newErrors);
             return;
@@ -104,7 +106,7 @@ function AddEntryForm({ onAdd, onUpdate, editEntry, onCancelEdit }) {
 
             <form onSubmit={handleSubmit} className="grid md:grid-cols-3 gap-6">
                 {/* Date Input */}
-                <div className="space-y-2 relative z-10">
+                <div className="space-y-2 relative z-50">
                     <label className="block text-sm font-medium text-surface-300">
                         Date
                     </label>
@@ -119,13 +121,13 @@ function AddEntryForm({ onAdd, onUpdate, editEntry, onCancelEdit }) {
                             }}
                             dateFormat="dd-MM-yyyy"
                             className={`w-full bg-surface-900 border ${errors.date ? 'border-danger-500 focus:ring-danger-500' : 'border-surface-700 focus:border-brand-500 focus:ring-brand-500'
-                                } text-surface-100 rounded-lg pl-10 pr-4 py-2.5 shadow-sm transition-all focus:ring-2 outline-none font-sans relative z-20`}
+                                } text-surface-100 rounded-lg pl-10 pr-4 py-2.5 shadow-sm transition-all focus:ring-2 outline-none font-sans relative z-10`}
                             placeholderText="Select date"
                             showPopperArrow={false}
-                            popperClassName="z-[100]" // Changed to high z-index
+                            popperClassName="z-[9999]" // Changed to high z-index
                             popperPlacement="bottom-start"
                         />
-                        <CalendarIcon className="w-5 h-5 text-surface-400 absolute left-3 top-3 pointer-events-none" />
+                        <CalendarIcon className="w-5 h-5 text-surface-400 absolute left-3 top-3 pointer-events-none z-20" />
                     </div>
                     {errors.date && (
                         <p className="text-xs text-danger-400 mt-1 flex items-center gap-1 animate-fade-in">

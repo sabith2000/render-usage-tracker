@@ -60,3 +60,11 @@
     @apply text-danger-400 text-xs mt-1;
   }
 }
+
+@layer base {
+  input[type=number]::-webkit-inner-spin-button, 
+  input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none; 
+    margin: 0; 
+  }
+}

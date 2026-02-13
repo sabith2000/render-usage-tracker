@@ -111,7 +111,7 @@ function MonthlyStatsCard({ stats, monthLabel }) {
 
                     <div
                         className={`h-full rounded-full transition-all duration-1000 ease-out relative overflow-hidden ${progressPercentage >= 100 ? 'bg-danger-500' :
-                                progressPercentage >= 80 ? 'bg-warning-500' : 'bg-brand-500'
+                            progressPercentage >= 80 ? 'bg-warning-500' : 'bg-brand-500'
                             }`}
                         style={{ width: `${Math.min(Math.max(progressPercentage, 0), 100)}%` }}
                     >
@@ -121,8 +121,8 @@ function MonthlyStatsCard({ stats, monthLabel }) {
                 </div>
 
                 <div className="flex justify-between text-xs text-surface-500 mt-1 font-sans">
-                    <span>0 hrs</span>
-                    <span>750 hrs Limit</span>
+                    <span>Start</span>
+                    <span>{750} hrs Limit</span>
                 </div>
             </div>
         </div>
