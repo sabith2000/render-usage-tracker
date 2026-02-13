@@ -1,5 +1,3 @@
-import { APP_VERSION } from '../utils/constants.js';
-
 function Header() {
     return (
         <header className="relative overflow-hidden">
@@ -16,12 +14,6 @@ function Header() {
                         <p className="text-surface-400 text-sm mt-1">
                             Track your monthly free instance hours (750 hrs/month)
                         </p>
-                    </div>
-
-                    <div className="hidden sm:flex items-center gap-3">
-                        <span className="text-xs font-mono bg-surface-800 text-surface-400 px-2.5 py-1 rounded-full border border-surface-700">
-                            v{APP_VERSION}
-                        </span>
                     </div>
                 </div>
             </div>

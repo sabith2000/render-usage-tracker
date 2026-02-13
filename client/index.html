@@ -1,14 +1,61 @@
-<!doctype html>
-<html lang="en" class="dark">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Track monthly cumulative free instance hours on Render.com (750 hrs/month limit)" />
-    <title>Render Free Usage Monitor</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Render Free Usage Monitor</title>
+  <meta name="description" content="Track your monthly free instance hours on Render.com" />
+  <style>
+    /* Critical initial loader styles to prevent white flash */
+    body {
+      background-color: #020617;
+      /* match surface-950 */
+      margin: 0;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    .initial-loader {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #94a3b8;
+      /* surface-400 */
+      font-size: 0.875rem;
+    }
+
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border: 4px solid #1e293b;
+      /* surface-800 */
+      border-top-color: #6366f1;
+      /* brand-500 */
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 1rem;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+
+<body class="dark bg-surface-950 text-surface-100 font-sans antialiased">
+  <div id="root">
+    <div class="initial-loader">
+      <div class="spinner"></div>
+      <p>Loading application...</p>
+    </div>
+  </div>
+  <script type="module" src="/src/main.jsx"></script>
+</body>
+
 </html>

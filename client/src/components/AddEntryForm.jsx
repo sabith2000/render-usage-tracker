@@ -4,6 +4,7 @@ import { getTodayIST } from '../utils/dateHelpers.js';
 
 /**
  * AddEntryForm — handles adding and editing entries with inline validation.
+ * Uses native date picker (YYYY-MM-DD) but communicates with app using DD-MM-YYYY.
  *
  * @param {{
  *   onSubmit: (entry: { date: string, totalHours: number }) => Promise<boolean>,
@@ -13,6 +14,7 @@ import { getTodayIST } from '../utils/dateHelpers.js';
  * }} props
  */
 function AddEntryForm({ onSubmit, entries, editingEntry, onCancelEdit }) {
+    // Internal state uses YYYY-MM-DD for native date input compatibility
     const [date, setDate] = useState('');
     const [totalHours, setTotalHours] = useState('');
     const [touched, setTouched] = useState({ date: false, hours: false });
@@ -20,22 +22,43 @@ function AddEntryForm({ onSubmit, entries, editingEntry, onCancelEdit }) {
 
     const isEditing = editingEntry !== null;
 
+    // Convert DD-MM-YYYY -> YYYY-MM-DD for input value
+    const toInputDate = (dmY) => {
+        if (!dmY) return '';
+        const parts = dmY.split('-'); // DD-MM-YYYY
+        if (parts.length !== 3) return '';
+        return `${parts[2]}-${parts[1]}-${parts[0]}`;
+    };
+
+    // Convert YYYY-MM-DD -> DD-MM-YYYY for storage/validation
+    const toStorageDate = (ymd) => {
+        if (!ymd) return '';
+        const parts = ymd.split('-'); // YYYY-MM-DD
+        if (parts.length !== 3) return '';
+        return `${parts[2]}-${parts[1]}-${parts[0]}`;
+    };
+
     // Pre-fill form when editing
     useEffect(() => {
         if (editingEntry) {
-            setDate(editingEntry.date || '');
+            setDate(toInputDate(editingEntry.date));
             setTotalHours(String(editingEntry.totalHours ?? ''));
             setTouched({ date: true, hours: true });
         } else {
-            setDate('');
+            // Default to today in YYYY-MM-DD
+            const today = new Date();
+            const offset = today.getTimezoneOffset();
+            const local = new Date(today.getTime() - offset * 60 * 1000);
+            const ymd = local.toISOString().split('T')[0];
+            setDate(ymd);
             setTotalHours('');
             setTouched({ date: false, hours: false });
         }
     }, [editingEntry]);
 
-    // Validate in real-time
+    // Validate using DD-MM-YYYY format
     const { valid, errors } = validateEntry(
-        { date, totalHours },
+        { date: toStorageDate(date), totalHours },
         entries,
         isEditing ? editingEntry._id : null
     );
@@ -45,23 +68,27 @@ function AddEntryForm({ onSubmit, entries, editingEntry, onCancelEdit }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        // Mark all fields as touched
         setTouched({ date: true, hours: true });
 
         if (!valid) return;
 
         setSubmitting(true);
         const success = await onSubmit({
-            date: date.trim(),
+            date: toStorageDate(date),
             totalHours: Number(totalHours),
         });
         setSubmitting(false);
 
         if (success) {
-            setDate('');
-            setTotalHours('');
-            setTouched({ date: false, hours: false });
+            if (!isEditing) {
+                // Reset to today after success add
+                const today = new Date();
+                const offset = today.getTimezoneOffset();
+                const local = new Date(today.getTime() - offset * 60 * 1000);
+                setDate(local.toISOString().split('T')[0]);
+                setTotalHours('');
+                setTouched({ date: false, hours: false });
+            }
         }
     };
 
@@ -72,53 +99,31 @@ function AddEntryForm({ onSubmit, entries, editingEntry, onCancelEdit }) {
         onCancelEdit();
     };
 
-    /**
-     * Handle date input — auto-insert dashes for DD-MM-YYYY format.
-     */
-    const handleDateChange = (e) => {
-        let value = e.target.value.replace(/[^0-9-]/g, '');
-
-        // Auto-insert dashes
-        const digitsOnly = value.replace(/-/g, '');
-        if (digitsOnly.length >= 4) {
-            value = `${digitsOnly.slice(0, 2)}-${digitsOnly.slice(2, 4)}-${digitsOnly.slice(4, 8)}`;
-        } else if (digitsOnly.length >= 2) {
-            value = `${digitsOnly.slice(0, 2)}-${digitsOnly.slice(2)}`;
-        }
-
-        setDate(value);
-        if (!touched.date) setTouched((t) => ({ ...t, date: true }));
-    };
-
-    const handleHoursChange = (e) => {
-        setTotalHours(e.target.value);
-        if (!touched.hours) setTouched((t) => ({ ...t, hours: true }));
-    };
-
     return (
-        <div className="card p-5 animate-fade-in">
-            <h2 className="text-lg font-semibold text-surface-100 mb-4">
+        <div className="card p-5 animate-fade-in shadow-glow">
+            <h2 className="text-lg font-semibold text-surface-100 mb-4 flex items-center gap-2">
                 {isEditing ? '✏️ Edit Entry' : '➕ Add Entry'}
             </h2>
 
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {/* Date Input */}
+                    {/* Native Date Input */}
                     <div>
                         <label htmlFor="entry-date" className="label">
-                            Date (DD-MM-YYYY)
+                            Date
                         </label>
                         <input
                             id="entry-date"
-                            type="text"
+                            type="date"
                             value={date}
-                            onChange={handleDateChange}
+                            onChange={(e) => {
+                                setDate(e.target.value);
+                                if (!touched.date) setTouched((t) => ({ ...t, date: true }));
+                            }}
                             onBlur={() => setTouched((t) => ({ ...t, date: true }))}
-                            placeholder={getTodayIST()}
-                            maxLength={10}
-                            className={`input-field ${dateError ? 'input-error' : ''}`}
+                            className={`input-field ${dateError ? 'input-error' : ''} [color-scheme:dark]`}
                             disabled={submitting}
-                            autoComplete="off"
+                            required
                         />
                         {dateError && <p className="error-text">{dateError}</p>}
                     </div>
@@ -128,27 +133,37 @@ function AddEntryForm({ onSubmit, entries, editingEntry, onCancelEdit }) {
                         <label htmlFor="entry-hours" className="label">
                             Total Hours Used (Cumulative)
                         </label>
-                        <input
-                            id="entry-hours"
-                            type="text"
-                            value={totalHours}
-                            onChange={handleHoursChange}
-                            onBlur={() => setTouched((t) => ({ ...t, hours: true }))}
-                            placeholder="e.g. 245.5"
-                            className={`input-field ${hoursError ? 'input-error' : ''}`}
-                            disabled={submitting}
-                            autoComplete="off"
-                        />
+                        <div className="relative">
+                            <input
+                                id="entry-hours"
+                                type="number"
+                                step="0.01"
+                                min="0"
+                                value={totalHours}
+                                onChange={(e) => {
+                                    setTotalHours(e.target.value);
+                                    if (!touched.hours) setTouched((t) => ({ ...t, hours: true }));
+                                }}
+                                onBlur={() => setTouched((t) => ({ ...t, hours: true }))}
+                                placeholder="e.g. 245.5"
+                                className={`input-field tabular-nums ${hoursError ? 'input-error' : ''}`}
+                                disabled={submitting}
+                                autoComplete="off"
+                            />
+                            <span className="absolute right-3 top-2.5 text-surface-500 text-sm pointer-events-none">
+                                hrs
+                            </span>
+                        </div>
                         {hoursError && <p className="error-text">{hoursError}</p>}
                     </div>
                 </div>
 
                 {/* Buttons */}
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 pt-2">
                     <button
                         type="submit"
                         disabled={submitting || (touched.date && touched.hours && !valid)}
-                        className="btn-primary"
+                        className="btn-primary flex-1 sm:flex-none justify-center"
                     >
                         {submitting ? (
                             <span className="flex items-center gap-2">

@@ -6,10 +6,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [0.0.4-dev] - 2026-02-14
+
+### Changed (Phase 4 — Polish & Fixes)
+- **UI/UX Polish:**
+  - Removed version badge from Header (kept only in Footer)
+  - Replaced text date input with **native date picker** (`type="date"`) in `AddEntryForm`
+  - Fixed month selector dropdown arrow alignment
+  - Enforced consistent fonts for numbers (`tabular-nums`) in tables and stats cards
+  - Moved toast notifications to `top-center` for better visibility
+  - Replaced simple spinner with a **modern animated double-ring spinner**
+  - Added "App Shell" loading state (CSS spinner) to `index.html` to prevent white screen on slow loads
+- **Code Quality:**
+  - Enhanced `server.js` with detailed, non-coder-friendly console logs for requests and connections
+  - Added structured logging to `entries.js` for all CRUD operations
+  - Audited code for redundancy
+
+---
+
 ## [0.0.3-dev] - 2026-02-14
 
 ### Added (Phase 3 — UI Components)
-- Header component with gradient background and version badge
+- Header component with gradient background
 - AddEntryForm with inline validation, auto-dash date input, add/edit modes
 - EntriesTable with daily increase column, invalid row highlighting, edit/delete actions
 - MonthSelector dropdown auto-detecting available months
@@ -20,6 +38,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - LoadingSpinner, ErrorFallback (with retry), EmptyState components
 - Complete App.jsx assembly with all state management
 - Constants module for shared config values
+- Render deployment configuration (`render.yaml`)
 
 ---
 
