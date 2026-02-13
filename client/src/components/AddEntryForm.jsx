@@ -119,9 +119,11 @@ function AddEntryForm({ onAdd, onUpdate, editEntry, onCancelEdit }) {
                             }}
                             dateFormat="dd-MM-yyyy"
                             className={`w-full bg-surface-900 border ${errors.date ? 'border-danger-500 focus:ring-danger-500' : 'border-surface-700 focus:border-brand-500 focus:ring-brand-500'
-                                } text-surface-100 rounded-lg pl-10 pr-4 py-2.5 shadow-sm transition-all focus:ring-2 outline-none font-sans`}
+                                } text-surface-100 rounded-lg pl-10 pr-4 py-2.5 shadow-sm transition-all focus:ring-2 outline-none font-sans relative z-20`}
                             placeholderText="Select date"
                             showPopperArrow={false}
+                            popperClassName="z-[100]" // Changed to high z-index
+                            popperPlacement="bottom-start"
                         />
                         <CalendarIcon className="w-5 h-5 text-surface-400 absolute left-3 top-3 pointer-events-none" />
                     </div>
@@ -166,10 +168,10 @@ function AddEntryForm({ onAdd, onUpdate, editEntry, onCancelEdit }) {
                         type="submit"
                         disabled={isSubmitting}
                         className={`w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg font-medium text-white shadow-lg transition-all transform active:scale-95 ${isSubmitting
-                                ? 'bg-surface-600 cursor-not-allowed text-surface-300'
-                                : editEntry
-                                    ? 'bg-brand-600 hover:bg-brand-500 hover:shadow-brand-500/25'
-                                    : 'bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 hover:shadow-brand-500/25'
+                            ? 'bg-surface-600 cursor-not-allowed text-surface-300'
+                            : editEntry
+                                ? 'bg-brand-600 hover:bg-brand-500 hover:shadow-brand-500/25'
+                                : 'bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 hover:shadow-brand-500/25'
                             }`}
                     >
                         {isSubmitting ? (

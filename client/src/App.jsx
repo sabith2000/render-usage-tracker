@@ -151,10 +151,11 @@ function App() {
 
       <main className="flex-1 max-w-5xl mx-auto px-4 py-6 w-full space-y-6">
         {/* Add/Edit Entry Form */}
+        {/* Add/Edit Entry Form */}
         <AddEntryForm
-          onSubmit={handleSubmit}
-          entries={entries}
-          editingEntry={editingEntry}
+          onAdd={addEntry}
+          onUpdate={updateEntry}
+          editEntry={editingEntry}
           onCancelEdit={handleCancelEdit}
         />
 
@@ -170,9 +171,10 @@ function App() {
           {entries.length > 0 && (
             <button
               onClick={handleClearAll}
-              className="btn-ghost text-sm text-danger-400 hover:text-danger-300"
+              className="flex items-center gap-2 px-3 py-2 bg-danger-900/10 text-danger-400 border border-danger-900/50 hover:bg-danger-900/30 hover:text-danger-300 hover:border-danger-500/50 rounded-lg transition-all text-sm font-medium"
             >
-              🗑️ Clear All
+              <Trash2 className="w-4 h-4" />
+              Clear All Entries
             </button>
           )}
         </div>
