@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback } from 'react';
+import { Trash2 } from 'lucide-react';
 import { useEntries } from './hooks/useEntries.js';
 import { computeMonthlyStats } from './utils/calculations.js';
 import { MONTH_NAMES } from './utils/dateHelpers.js';

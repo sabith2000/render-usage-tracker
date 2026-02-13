@@ -20,6 +20,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   - **Pagination:** Added client-side pagination to `EntriesTable` (10 items/page).
   - **Precision:** Added detailed decimal view to "Remaining Hours" (e.g., `(645.58 hrs)`).
   - **Progress Bar:** Fixed visual issue for 0-value start state.
+  - **Polish:** Fixed DatePicker overlap, improved Clear All button, and enhanced Status Badge visibility.
 
 ---
 
