@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: render-usage-monitor
+    env: node
+    plan: free
+    buildCommand: npm install && cd client && npm install && npm run build && cd ../server && npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: 18.17.0
+      - key: MONGODB_URI
+        sync: false
