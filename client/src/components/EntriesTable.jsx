@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Edit2, Trash2, ChevronLeft, ChevronRight, AlertCircle, Plus } from 'lucide-react';
+import { Edit2, Trash2, ChevronLeft, ChevronRight, AlertCircle, Plus, History } from 'lucide-react';
 
 /**
  * EntriesTable — Displays list of entries with pagination and actions.
@@ -10,7 +10,7 @@ import { Edit2, Trash2, ChevronLeft, ChevronRight, AlertCircle, Plus } from 'luc
  *   onDelete: (id: string) => void,
  * }} props
  */
-function EntriesTable({ entriesWithIncrease, onEdit, onDelete }) {
+function EntriesTable({ entriesWithIncrease, onEdit, onDelete, onViewHistory }) {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
 
@@ -71,6 +71,15 @@ function EntriesTable({ entriesWithIncrease, onEdit, onDelete }) {
                                     </td>
                                     <td className="py-4 px-6 text-right text-sm font-medium">
                                         <div className="flex items-center justify-end gap-2 transition-opacity">
+                                            {entry.history && entry.history.length > 0 && (
+                                                <button
+                                                    onClick={() => onViewHistory(entry)}
+                                                    className="p-2 text-amber-400 hover:text-white hover:bg-amber-600 rounded-lg transition-colors"
+                                                    title="View Edit History"
+                                                >
+                                                    <History className="w-4 h-4" />
+                                                </button>
+                                            )}
                                             <button
                                                 onClick={() => onEdit(entry)}
                                                 className="p-2 text-brand-300 hover:text-white hover:bg-brand-600 rounded-lg transition-colors"

@@ -196,3 +196,47 @@ function safeFixed(val, decimals = 2) {
     if (isNaN(num) || !isFinite(num)) return 0;
     return Number(num.toFixed(decimals));
 }
+
+/**
+ * Compute the daily average for the previous month (relative to a given month/year).
+ * Returns null if insufficient data exists for the previous month.
+ *
+ * @param {Array<{ date: string, totalHours: number }>} allEntries - Sorted chronologically
+ * @param {number} month - 1-indexed current month
+ * @param {number} year - Current year
+ * @returns {number|null} Previous month's daily average, or null
+ */
+export function computePreviousMonthAvg(allEntries, month, year) {
+    // Determine previous month/year
+    let prevMonth = month - 1;
+    let prevYear = year;
+    if (prevMonth < 1) {
+        prevMonth = 12;
+        prevYear = year - 1;
+    }
+
+    const prevEntries = (allEntries || []).filter((e) => isInMonth(e.date, prevMonth, prevYear));
+    if (prevEntries.length < 2) return null;
+
+    const first = prevEntries[0];
+    const last = prevEntries[prevEntries.length - 1];
+    const days = daysBetween(first.date, last.date);
+    if (days <= 0) return null;
+
+    const avg = (safeNumber(last.totalHours) - safeNumber(first.totalHours)) / days;
+    return safeFixed(avg, 4);
+}
+
+/**
+ * Extract totalHours values for entries in the selected month (for sparkline display).
+ *
+ * @param {Array<{ date: string, totalHours: number }>} allEntries
+ * @param {number} month - 1-indexed
+ * @param {number} year
+ * @returns {number[]}
+ */
+export function getMonthlySparklineData(allEntries, month, year) {
+    return (allEntries || [])
+        .filter((e) => isInMonth(e.date, month, year))
+        .map((e) => safeNumber(e.totalHours));
+}

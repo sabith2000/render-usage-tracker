@@ -12,6 +12,12 @@ const entrySchema = new mongoose.Schema(
             required: [true, 'Total hours is required'],
             min: [0, 'Total hours must be >= 0'],
         },
+        history: [
+            {
+                totalHours: { type: Number, required: true },
+                updatedAt: { type: Date, default: Date.now },
+            },
+        ],
     },
     {
         timestamps: true,

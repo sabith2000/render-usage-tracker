@@ -1,5 +1,6 @@
 import { useState, useMemo, useCallback } from 'react';
-import { Trash2 } from 'lucide-react';
+import { Trash2, Download } from 'lucide-react';
+import toast from 'react-hot-toast';
 import { useEntries } from './hooks/useEntries.js';
 import { computeMonthlyStats } from './utils/calculations.js';
 import { MONTH_NAMES } from './utils/dateHelpers.js';
@@ -13,6 +14,7 @@ import LoadingSpinner from './components/LoadingSpinner.jsx';
 import ErrorFallback from './components/ErrorFallback.jsx';
 import EmptyState from './components/EmptyState.jsx';
 import ConfirmDialog from './components/ConfirmDialog.jsx';
+import HistoryModal from './components/HistoryModal.jsx';
 
 function App() {
   const {
@@ -33,6 +35,9 @@ function App() {
 
   // Editing state
   const [editingEntry, setEditingEntry] = useState(null);
+
+  // History modal state
+  const [historyEntry, setHistoryEntry] = useState(null);
 
   // Confirm dialog state
   const [confirmDialog, setConfirmDialog] = useState({
@@ -120,6 +125,39 @@ function App() {
     setConfirmDialog((prev) => ({ ...prev, isOpen: false }));
   }, []);
 
+  const handleViewHistory = useCallback((entry) => {
+    setHistoryEntry(entry);
+  }, []);
+
+  const handleExport = useCallback(() => {
+    if (entries.length === 0) {
+      toast.error('No entries to export');
+      return;
+    }
+    try {
+      const exportData = entries.map(({ _id, date, totalHours, history, createdAt, updatedAt }) => ({
+        date,
+        totalHours,
+        history: history || [],
+        createdAt,
+        updatedAt,
+      }));
+      const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const today = new Date().toISOString().slice(0, 10);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `render-usage-export-${today}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      toast.success(`Exported ${entries.length} entries`);
+    } catch (err) {
+      toast.error('Failed to export data');
+    }
+  }, [entries]);
+
   // Loading state
   if (loading) {
     return (
@@ -171,18 +209,27 @@ function App() {
           />
 
           {entries.length > 0 && (
-            <button
-              onClick={handleClearAll}
-              className="flex items-center gap-2 px-3 py-2 bg-danger-600 text-white hover:bg-danger-500 shadow-lg shadow-danger-500/30 rounded-lg transition-all text-sm font-medium border border-transparent"
-            >
-              <Trash2 className="w-4 h-4" />
-              Clear All Entries
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleExport}
+                className="flex items-center gap-2 px-3 py-2 bg-brand-600 text-white hover:bg-brand-500 shadow-lg shadow-brand-500/30 rounded-lg transition-all text-sm font-medium border border-transparent"
+              >
+                <Download className="w-4 h-4" />
+                Export Data
+              </button>
+              <button
+                onClick={handleClearAll}
+                className="flex items-center gap-2 px-3 py-2 bg-danger-600 text-white hover:bg-danger-500 shadow-lg shadow-danger-500/30 rounded-lg transition-all text-sm font-medium border border-transparent"
+              >
+                <Trash2 className="w-4 h-4" />
+                Clear All Entries
+              </button>
+            </div>
           )}
         </div>
 
         {/* Monthly Statistics */}
-        <MonthlyStatsCard stats={stats} monthLabel={monthLabel} />
+        <MonthlyStatsCard stats={stats} monthLabel={monthLabel} entries={entries} selectedMonth={selectedMonth} selectedYear={selectedYear} />
 
         {/* Entries Table or Empty State */}
         {stats.entriesWithIncrease.length > 0 ? (
@@ -190,6 +237,7 @@ function App() {
             entriesWithIncrease={stats.entriesWithIncrease}
             onEdit={handleEdit}
             onDelete={handleDelete}
+            onViewHistory={handleViewHistory}
           />
         ) : (
           <EmptyState monthLabel={monthLabel} />
@@ -207,6 +255,13 @@ function App() {
         onConfirm={confirmDialog.onConfirm}
         onCancel={closeDialog}
         danger={confirmDialog.danger}
+      />
+
+      {/* History Modal */}
+      <HistoryModal
+        isOpen={!!historyEntry}
+        entry={historyEntry}
+        onClose={() => setHistoryEntry(null)}
       />
     </div>
   );

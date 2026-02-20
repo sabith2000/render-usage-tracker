@@ -85,18 +85,29 @@ router.put('/:id', async (req, res) => {
             }
         }
 
-        const updated = await Entry.findByIdAndUpdate(
-            req.params.id,
-            { date, totalHours: Number(totalHours) },
-            { new: true, runValidators: true }
-        );
-
-        if (!updated) {
+        // Fetch current entry to snapshot its state before updating
+        const current = await Entry.findById(req.params.id);
+        if (!current) {
             logger.warn(`   ⚠️ Entry not found for update: ${req.params.id}`);
             return res.status(404).json({ message: 'Entry not found' });
         }
 
-        logger.info(`   ✅ Entry updated successfully!`);
+        // Push current totalHours into history, capped at last 20 records
+        const updated = await Entry.findByIdAndUpdate(
+            req.params.id,
+            {
+                $set: { date, totalHours: Number(totalHours) },
+                $push: {
+                    history: {
+                        $each: [{ totalHours: current.totalHours, updatedAt: new Date() }],
+                        $slice: -20,
+                    },
+                },
+            },
+            { new: true, runValidators: true }
+        );
+
+        logger.info(`   ✅ Entry updated successfully! History now has ${updated.history.length} record(s).`);
         res.json(updated);
     } catch (error) {
         if (error.name === 'ValidationError') {

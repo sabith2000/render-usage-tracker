@@ -1,12 +1,15 @@
-# Render Free Usage Monitor (v0.0.5-dev)
+# Render Free Usage Monitor (v0.0.9-dev)
 
-Building a single-page web app to track monthly cumulative free instance hours on Render.com (750 hrs/month limit).
+A single-page web app to track monthly cumulative free instance hours on Render.com (750 hrs/month limit).
 
 ## Features
 - 📊 Track daily usage and monthly cumulative hours
-- 📈 See daily increase, average usage, and projected total
+- 📈 Daily increase, average usage, projected total, and remaining hours
 - 📅 View past months with auto-detection
-- 🎨 Modern UI with Dark Mode (brand indigo/slate theme)
+- 🕓 Edit history tracking per entry (audit trail, last 20 edits)
+- 📥 Export all entries as JSON for backup
+- 📉 Sparkline trend chart and month-over-month comparison arrow
+- 🎨 Modern dark UI (brand indigo/slate theme, Inter font)
 - ✅ Entry validation (no future dates, non-decreasing cumulative hours)
 - 📝 Detailed logging (Console: System status only, File: Verbose debug logs)
 
@@ -14,8 +17,7 @@ Building a single-page web app to track monthly cumulative free instance hours o
 
 1. **Install Dependencies:**
    ```bash
-   npm install
-   cd client && npm install && cd ../server && npm install
+   npm run install:all
    ```
 
 2. **Setup Environment:**
@@ -37,10 +39,10 @@ Building a single-page web app to track monthly cumulative free instance hours o
 - **Deployment:** Render (Single Service via `render.yaml`)
 
 ## Project Structure
-- `client/` - React frontend
-- `server/` - Express backend
-- `render.yaml` - Deployment blueprint
-- `server/logs/` - Backend logs (created on runtime)
+- `client/` — React frontend
+- `server/` — Express backend
+- `render.yaml` — Deployment blueprint
+- `server/logs/` — Backend logs (created at runtime)
 
 ## Version History
 See [CHANGELOG.md](CHANGELOG.md) for detailed version history.

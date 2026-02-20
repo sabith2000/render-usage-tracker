@@ -6,6 +6,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [0.0.9-dev] - 2026-02-20
+
+### Added (Phase 7 — History, Export & Refinements)
+- **History Tracking:**
+  - Entry schema now includes a `history` array sub-document (`{ totalHours, updatedAt }`).
+  - `PUT /api/entries/:id` automatically snapshots the current value into history before updating (capped at 20 records).
+  - New **HistoryModal** component shows a timeline of previous values with timestamps.
+  - **History** icon button in `EntriesTable` actions (visible only for edited entries).
+- **Export Data:**
+  - "Export Data" button in the actions bar generates a JSON file download (`render-usage-export-YYYY-MM-DD.json`) containing all entries with their history.
+- **MonthlyStatsCard Refinements:**
+  - **Trend Indicator:** Up/down arrow next to "Daily Avg" comparing current month vs previous month's average, with percentage change.
+  - **Sparkline:** SVG mini usage trend chart showing cumulative hours across the current month's entries.
+
+---
+
 ## [0.0.8-dev] - 2026-02-14
 
 ### Changed (Phase 6 Polish 2 — Manual Fixes)
