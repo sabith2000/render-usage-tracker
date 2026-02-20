@@ -4,9 +4,7 @@
  */
 
 import { isInMonth, daysBetween, getDaysInMonth } from './dateHelpers.js';
-
-/** Monthly free hour limit on Render */
-export const FREE_HOUR_LIMIT = 750;
+import { FREE_HOUR_LIMIT } from './constants.js';
 
 /**
  * Compute daily increase values for a sorted array of entries.

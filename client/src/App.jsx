@@ -58,17 +58,6 @@ function App() {
   const monthLabel = `${MONTH_NAMES[selectedMonth - 1]} ${selectedYear}`;
 
   // Handlers
-  const handleSubmit = useCallback(
-    async (entry) => {
-      if (editingEntry) {
-        const success = await updateEntry(editingEntry._id, entry);
-        if (success) setEditingEntry(null);
-        return success;
-      }
-      return addEntry(entry);
-    },
-    [editingEntry, updateEntry, addEntry]
-  );
 
   const handleEdit = useCallback((entry) => {
     setEditingEntry(entry);
@@ -189,7 +178,6 @@ function App() {
       <Header />
 
       <main className="flex-1 max-w-5xl mx-auto px-4 py-6 w-full space-y-6">
-        {/* Add/Edit Entry Form */}
         {/* Add/Edit Entry Form */}
         <AddEntryForm
           onAdd={addEntry}

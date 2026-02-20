@@ -1,43 +1,29 @@
 import { CheckCircle2, AlertTriangle, AlertOctagon, Clock } from 'lucide-react';
+import { STATUS_COLORS } from '../utils/constants.js';
+
+const STATUS_ICONS = {
+    SAFE: CheckCircle2,
+    WARNING: AlertTriangle,
+    DANGER: AlertOctagon,
+    'INVALID DATA': AlertTriangle,
+    WAITING: Clock,
+};
 
 /**
  * StatusBadge — Visual indicator of current usage status.
+ * Uses STATUS_COLORS from constants.js for consistent theming.
  *
  * @param {{ status: 'SAFE'|'DANGER'|'WARNING'|'WAITING'|'INVALID DATA' }} props
  */
 function StatusBadge({ status }) {
-    let colorClass = 'bg-surface-800 text-surface-400 border-surface-700';
-    let Icon = Clock;
-    let label = status;
-
-    switch (status) {
-        case 'SAFE':
-            colorClass = 'bg-success-500/15 text-success-400 border-success-500/50 shadow-[0_0_15px_-3px_rgba(16,185,129,0.2)]';
-            Icon = CheckCircle2;
-            break;
-        case 'WARNING':
-            colorClass = 'bg-warning-500/15 text-warning-400 border-warning-500/50 shadow-[0_0_15px_-3px_rgba(245,158,11,0.2)]';
-            Icon = AlertTriangle;
-            break;
-        case 'DANGER':
-            colorClass = 'bg-danger-500/15 text-danger-400 border-danger-500/50 shadow-[0_0_15px_-3px_rgba(239,68,68,0.2)]';
-            Icon = AlertOctagon;
-            break;
-        case 'INVALID DATA':
-            colorClass = 'bg-orange-500/15 text-orange-400 border-orange-500/50 shadow-[0_0_15px_-3px_rgba(249,115,22,0.2)]';
-            Icon = AlertTriangle;
-            break;
-        default:
-            colorClass = 'bg-surface-800 text-surface-400 border-surface-700';
-            Icon = Clock;
-            label = 'WAITING FOR DATA';
-    }
+    const colors = STATUS_COLORS[status] || STATUS_COLORS.WAITING;
+    const Icon = STATUS_ICONS[status] || Clock;
 
     return (
-        <div className={`flex items-center gap-2 px-4 py-2 rounded-full border ${colorClass} transition-all duration-300 animate-fade-in`}>
+        <div className={`flex items-center gap-2 px-4 py-2 rounded-full border ${colors.bg} ${colors.border} ${colors.text} ${colors.shadow} transition-all duration-300 animate-fade-in`}>
             <Icon className="w-5 h-5" />
             <span className="text-sm font-bold tracking-wide uppercase font-sans">
-                {label}
+                {colors.label}
             </span>
         </div>
     );

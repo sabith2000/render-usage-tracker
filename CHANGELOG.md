@@ -6,6 +6,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [0.0.10-dev] - 2026-02-20
+
+### Changed (Phase 8 — Deployment Readiness & Cleanup)
+- **Branding:** Custom SVG favicon (indigo pulse icon), updated page title, theme-color meta, Open Graph tags
+- **Render Deployment:** `render.yaml` bumped to Node 20.11.0 LTS, added `NODE_ENV=production`
+- **Server:** CORS disabled in production (same-origin), improved catch-all route logging
+- **Logger:** Production-aware — console-only on Render (ephemeral FS), file logging in dev
+- **StatusBadge:** Refactored to use `STATUS_COLORS` from `constants.js` (scalable theming)
+- **Calculations:** `FREE_HOUR_LIMIT` imported from single source (`constants.js`)
+
+### Removed
+- Unused `date-fns` dependency
+- Duplicate `handleSubmit` handler in `App.jsx`
+- Dead comment duplication
+
+---
+
 ## [0.0.9-dev] - 2026-02-20
 
 ### Added (Phase 7 — History, Export & Refinements)

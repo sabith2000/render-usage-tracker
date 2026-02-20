@@ -1,13 +1,13 @@
 {
     "name": "render-free-usage-monitor",
-    "version": "0.0.1",
+    "version": "0.0.10-dev",
     "description": "Track monthly cumulative free instance hours on Render.com",
     "private": true,
     "scripts": {
         "dev": "concurrently --names \"SERVER,CLIENT\" --prefix-colors \"cyan,magenta\" \"npm run dev:server\" \"npm run dev:client\"",
         "dev:client": "cd client && npm run dev",
         "dev:server": "cd server && npm run dev",
-        "build": "cd client && npm run build",
+        "build": "cd client && npm install && npm run build && cd ../server && npm install",
         "start": "cd server && npm start",
         "install:all": "npm install && cd client && npm install && cd ../server && npm install"
     },

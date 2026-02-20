@@ -1,4 +1,4 @@
-# Render Free Usage Monitor (v0.0.9-dev)
+# Render Free Usage Monitor (v0.0.10-dev)
 
 A single-page web app to track monthly cumulative free instance hours on Render.com (750 hrs/month limit).
 
@@ -33,16 +33,22 @@ A single-page web app to track monthly cumulative free instance hours on Render.
    # Client: http://localhost:5173
    ```
 
+## Deployment (Render.com)
+
+This app deploys as a **single service** on Render using the included `render.yaml` blueprint:
+- Client is built to `client/dist/` and served as static files by Express
+- Set `MONGODB_URI` in Render's environment variables
+
 ## Tech Stack
 - **Frontend:** React + Vite + TailwindCSS v3
 - **Backend:** Express + Mongoose (MongoDB Atlas)
-- **Deployment:** Render (Single Service via `render.yaml`)
+- **Deployment:** Render (Single Web Service via `render.yaml`)
 
 ## Project Structure
 - `client/` — React frontend
 - `server/` — Express backend
 - `render.yaml` — Deployment blueprint
-- `server/logs/` — Backend logs (created at runtime)
+- `server/logs/` — Backend logs (development only)
 
 ## Version History
 See [CHANGELOG.md](CHANGELOG.md) for detailed version history.

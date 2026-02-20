@@ -3,15 +3,24 @@
 
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Render Free Usage Monitor</title>
-  <meta name="description" content="Track your monthly free instance hours on Render.com" />
+  <title>Render Monitor — Free Usage Tracker</title>
+  <meta name="description"
+    content="Track your monthly free instance hours on Render.com — daily usage, projections, and alerts." />
+  <meta name="theme-color" content="#020617" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Render Monitor — Free Usage Tracker" />
+  <meta property="og:description"
+    content="Track monthly cumulative free instance hours on Render.com (750 hrs/month limit)." />
+  <meta property="og:type" content="website" />
+
   <style>
     /* Critical initial loader styles to prevent white flash */
     body {
       background-color: #020617;
-      /* match surface-950 */
+      /* surface-950 */
       margin: 0;
       font-family: 'Inter', system-ui, sans-serif;
     }
@@ -52,7 +61,7 @@
   <div id="root">
     <div class="initial-loader">
       <div class="spinner"></div>
-      <p>Loading application...</p>
+      <p>Loading Render Monitor...</p>
     </div>
   </div>
   <script type="module" src="/src/main.jsx"></script>
