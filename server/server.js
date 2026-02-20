@@ -3,6 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 import entriesRouter from './routes/entries.js';
 import { logger } from './utils/logger.js';
@@ -35,17 +36,34 @@ app.use((req, res, next) => {
 // API routes
 app.use('/api/entries', entriesRouter);
 
-// Serve static frontend in production
-const clientDistPath = path.join(__dirname, '..', 'client', 'dist');
-app.use(express.static(clientDistPath));
+// Serve static frontend
+const clientDistPath = path.resolve(__dirname, '..', 'client', 'dist');
+const distExists = fs.existsSync(clientDistPath);
+logger.system(`📂 Static files path: ${clientDistPath}`);
+logger.system(`   Directory exists: ${distExists}`);
 
-app.get('*', (req, res) => {
-    // Only log page navigations, not static asset requests
-    if (!req.url.includes('.')) {
-        logger.info(`[Frontend] Serving SPA for route: ${req.url}`);
-    }
-    res.sendFile(path.join(clientDistPath, 'index.html'));
-});
+if (distExists) {
+    app.use(express.static(clientDistPath));
+
+    // SPA fallback — serve index.html for any non-API route
+    app.get('*', (req, res) => {
+        if (!req.url.includes('.')) {
+            logger.info(`[Frontend] Serving SPA for route: ${req.url}`);
+        }
+        res.sendFile(path.join(clientDistPath, 'index.html'));
+    });
+} else {
+    logger.warn('⚠️ client/dist not found — frontend will not be served.');
+    logger.warn('   Run "npm run build" in the client directory first.');
+    app.get('*', (req, res) => {
+        if (!req.url.startsWith('/api')) {
+            res.status(503).json({
+                message: 'Frontend not built. The client/dist directory was not found.',
+                hint: 'Ensure the build command runs before the start command.',
+            });
+        }
+    });
+}
 
 // Connect to MongoDB and start server
 async function startServer() {
