@@ -1,4 +1,4 @@
-# Render Free Usage Monitor (v0.0.10-dev)
+# Render Free Usage Monitor (v0.0.11-dev)
 
 A single-page web app to track monthly cumulative free instance hours on Render.com (750 hrs/month limit).
 

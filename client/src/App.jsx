@@ -10,7 +10,8 @@ import AddEntryForm from './components/AddEntryForm.jsx';
 import MonthSelector from './components/MonthSelector.jsx';
 import EntriesTable from './components/EntriesTable.jsx';
 import MonthlyStatsCard from './components/MonthlyStatsCard.jsx';
-import LoadingSpinner from './components/LoadingSpinner.jsx';
+import SkeletonLoader from './components/LoadingSpinner.jsx';
+import MonthTransitionBanner from './components/MonthTransitionBanner.jsx';
 import ErrorFallback from './components/ErrorFallback.jsx';
 import EmptyState from './components/EmptyState.jsx';
 import ConfirmDialog from './components/ConfirmDialog.jsx';
@@ -153,7 +154,7 @@ function App() {
       <div className="min-h-screen bg-surface-950">
         <Header />
         <div className="max-w-5xl mx-auto px-4 py-8">
-          <LoadingSpinner />
+          <SkeletonLoader />
         </div>
         <Footer />
       </div>
@@ -215,6 +216,9 @@ function App() {
             </div>
           )}
         </div>
+
+        {/* Month Transition Banner */}
+        <MonthTransitionBanner selectedMonth={selectedMonth} selectedYear={selectedYear} entries={entries} />
 
         {/* Monthly Statistics */}
         <MonthlyStatsCard stats={stats} monthLabel={monthLabel} entries={entries} selectedMonth={selectedMonth} selectedYear={selectedYear} />

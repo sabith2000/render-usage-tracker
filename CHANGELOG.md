@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [0.0.11-dev] - 2026-03-02
+
+### Fixed (Phase 9 — Month-Scoped Validation & UX Polish)
+- **Critical Bug:** Cumulative hours validation now scoped to same-month entries only. First entry of a new month accepts any `>= 0` value — no cross-month contamination.
+
+### Added
+- **Month Transition Banner:** Displays when switching to a new empty month, showing previous month's final reading and "Monthly counter reset" message.
+- **Skeleton Loaders:** Replaced spinner with shimmer skeleton matching the real page layout (form, stats, table).
+- **MonthSelector Enhancements:** "Current" tag on the live month, entry count per month in dropdown, `slide-down` animation.
+- **Animations:** `shimmer`, `slide-down`, `scale-in` keyframes. Card hover lift, input focus glow refinements.
+
+---
+
 ## [0.0.10-dev] - 2026-02-20
 
 ### Changed (Phase 8 — Deployment Readiness & Cleanup)

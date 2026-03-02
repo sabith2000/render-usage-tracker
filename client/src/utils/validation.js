@@ -3,10 +3,12 @@
  * All validators return { valid: boolean, errors: { date?: string, hours?: string } }
  */
 
-import { parseDate, isFutureDate, toSortableDate } from './dateHelpers.js';
+import { parseDate, isFutureDate, toSortableDate, getMonthYear } from './dateHelpers.js';
 
 /**
  * Validate a new or edited entry against existing entries.
+ * Cumulative constraint is month-scoped: hours must be non-decreasing
+ * within the same month only. First entry of a new month has no floor.
  *
  * @param {{ date: string, totalHours: string|number }} entry - The entry to validate
  * @param {Array<{ _id: string, date: string, totalHours: number }>} existingEntries - Sorted chronologically
@@ -49,34 +51,48 @@ export function validateEntry(entry, existingEntries = [], editingId = null) {
         } else if (hours < 0) {
             errors.hours = 'Total hours must be >= 0';
         } else {
-            // Check cumulative constraint (hours must not decrease)
-            const otherEntries = existingEntries.filter((e) => e._id !== editingId);
+            // Month-scoped cumulative constraint:
+            // Only compare against entries in the SAME month as the new entry.
+            // First entry of a new month has no floor — any >= 0 value is fine.
+            if (!errors.date && entry.date) {
+                const entryMonthYear = getMonthYear(entry.date);
 
-            if (otherEntries.length > 0 && !errors.date && entry.date) {
-                const sortableNewDate = toSortableDate(entry.date);
+                if (entryMonthYear) {
+                    const sameMonthEntries = existingEntries.filter((e) => {
+                        if (e._id === editingId) return false;
+                        const my = getMonthYear(e.date);
+                        return my && my.month === entryMonthYear.month && my.year === entryMonthYear.year;
+                    });
 
-                // Find entries before and after the new entry's date
-                const entriesBefore = otherEntries.filter(
-                    (e) => toSortableDate(e.date) < sortableNewDate
-                );
-                const entriesAfter = otherEntries.filter(
-                    (e) => toSortableDate(e.date) > sortableNewDate
-                );
+                    if (sameMonthEntries.length > 0) {
+                        const sortableNewDate = toSortableDate(entry.date);
 
-                // Must be >= the last entry before it
-                if (entriesBefore.length > 0) {
-                    const lastBefore = entriesBefore[entriesBefore.length - 1];
-                    if (hours < lastBefore.totalHours) {
-                        errors.hours = `Must be >= ${lastBefore.totalHours} (previous entry on ${lastBefore.date})`;
+                        // Entries before this date in the same month
+                        const entriesBefore = sameMonthEntries.filter(
+                            (e) => toSortableDate(e.date) < sortableNewDate
+                        );
+                        // Entries after this date in the same month
+                        const entriesAfter = sameMonthEntries.filter(
+                            (e) => toSortableDate(e.date) > sortableNewDate
+                        );
+
+                        // Must be >= the last entry before it (same month)
+                        if (entriesBefore.length > 0) {
+                            const lastBefore = entriesBefore[entriesBefore.length - 1];
+                            if (hours < lastBefore.totalHours) {
+                                errors.hours = `Must be >= ${lastBefore.totalHours} (previous entry on ${lastBefore.date})`;
+                            }
+                        }
+
+                        // Must be <= the first entry after it (same month)
+                        if (entriesAfter.length > 0 && !errors.hours) {
+                            const firstAfter = entriesAfter[0];
+                            if (hours > firstAfter.totalHours) {
+                                errors.hours = `Must be <= ${firstAfter.totalHours} (next entry on ${firstAfter.date})`;
+                            }
+                        }
                     }
-                }
-
-                // Must be <= the first entry after it
-                if (entriesAfter.length > 0 && !errors.hours) {
-                    const firstAfter = entriesAfter[0];
-                    if (hours > firstAfter.totalHours) {
-                        errors.hours = `Must be <= ${firstAfter.totalHours} (next entry on ${firstAfter.date})`;
-                    }
+                    // If sameMonthEntries is empty → first entry of this month → no constraint
                 }
             }
         }
@@ -90,11 +106,10 @@ export function validateEntry(entry, existingEntries = [], editingId = null) {
 
 /**
  * Check if a single field has an error based on touched state.
- * Returns the error message if the field is touched and has an error.
  *
- * @param {object} errors - Error object from validateEntry
- * @param {object} touched - Object tracking which fields have been touched
- * @param {string} field - Field name to check
+ * @param {object} errors
+ * @param {object} touched
+ * @param {string} field
  * @returns {string|null}
  */
 export function getFieldError(errors, touched, field) {
