@@ -1,6 +1,6 @@
 # Render Free Usage Monitor — Project Context
 
-> **Version:** 0.0.13-dev
+> **Version:** 0.0.14-dev
 > **Last Updated:** 2026-03-31
 > **Purpose:** This file is the single source of truth for understanding, maintaining, and extending this project. Any AI agent or developer **MUST read this file in full** before making changes.
 
@@ -503,6 +503,7 @@ See [CHANGELOG.md](CHANGELOG.md) for the full, detailed version history.
 | 0.0.11 | 2026-03-02 | Month-scoped validation fix, skeleton loaders, month transition banner |
 | 0.0.12 | 2026-03-31 | AI context document (`context.md`), deployment & release workflow |
 | 0.0.13 | 2026-03-31 | Version sync, file rename, healthcheck endpoint, last-synced UI, constant fix |
+| 0.0.14 | 2026-03-31 | Axios timeout+retry, date picker overlap fix, history modal logic fix |
 
 ---
 

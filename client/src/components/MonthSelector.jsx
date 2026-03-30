@@ -88,7 +88,7 @@ function MonthSelector({ entries, selectedMonth, selectedYear, onSelect }) {
 
                 {/* Dropdown Menu */}
                 {isOpen && (
-                    <div className="absolute top-full mt-2 right-0 w-full sm:w-72 bg-surface-800 border border-surface-700 rounded-xl shadow-xl z-50 overflow-hidden animate-slide-down origin-top-right">
+                    <div className="absolute top-full mt-2 right-0 w-full sm:w-72 bg-surface-800 border border-surface-700 rounded-xl shadow-xl z-40 overflow-hidden animate-slide-down origin-top-right">
                         <div className="max-h-60 overflow-y-auto custom-scrollbar p-1">
                             {options.map((opt) => {
                                 const isSelected = opt.key === currentKey;

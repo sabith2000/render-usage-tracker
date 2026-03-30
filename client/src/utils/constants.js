@@ -2,7 +2,7 @@
  * Shared constants used across the app.
  */
 
-export const APP_VERSION = '0.0.13-dev';
+export const APP_VERSION = '0.0.14-dev';
 
 export const FREE_HOUR_LIMIT = 750;
 

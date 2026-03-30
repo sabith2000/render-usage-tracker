@@ -68,3 +68,8 @@
     margin: 0; 
   }
 }
+
+/* Ensure react-datepicker portal always floats above all other dropdowns */
+.react-datepicker-popper {
+  z-index: 9999 !important;
+}

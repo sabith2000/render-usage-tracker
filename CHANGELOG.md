@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [0.0.14-dev] - 2026-03-31
+
+### Fixed (Network + UX Reliability)
+- **Axios Timeout:** Increased from 10s to 30s to accommodate Render cold starts (30–90s).
+- **Retry Logic:** `getEntries()` now retries up to 2 times with exponential backoff (2s, 4s) on network errors, timeouts, and 5xx server errors. Mutating operations (POST/PUT/DELETE) are never auto-retried.
+- **Date Picker Overlap:** Added global CSS `z-index: 9999 !important` for `.react-datepicker-popper` and lowered MonthSelector dropdown from `z-50` to `z-40`.
+- **History Modal Logic:** Replaced fragile reverse-index math (`index === history.length - 1 - 0`) with clean `changedTo` computation. Each history record now correctly shows what value it was changed from → to.
+
+### Changed
+- **Timeout Error Message:** Updated to hint user about server cold start: "The server may be starting up — please try again."
+
+---
+
 ## [0.0.13-dev] - 2026-03-31
 
 ### Changed (Stability + Consistency)

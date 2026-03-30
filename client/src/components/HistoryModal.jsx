@@ -70,41 +70,53 @@ function HistoryModal({ isOpen, entry, onClose }) {
                             </div>
                         </div>
 
-                        {/* Previous values (newest first) */}
-                        {[...history].reverse().map((record, index) => {
-                            const date = new Date(record.updatedAt);
-                            const formatted = date.toLocaleString('en-IN', {
-                                day: '2-digit',
-                                month: 'short',
-                                year: 'numeric',
-                                hour: '2-digit',
-                                minute: '2-digit',
-                                hour12: true,
-                            });
-                            return (
-                                <div
-                                    key={index}
-                                    className="flex items-center gap-3 p-3 rounded-lg bg-surface-700/30 border border-surface-700/50 hover:bg-surface-700/50 transition-colors"
-                                >
-                                    <div className="w-2 h-2 rounded-full bg-surface-500 shrink-0" />
-                                    <div className="flex-1 min-w-0">
-                                        <span className="text-surface-300 font-medium tabular-nums font-sans">
-                                            {record.totalHours.toFixed(2)} hrs
-                                        </span>
-                                        <ArrowRight className="w-3 h-3 inline mx-2 text-surface-500" />
-                                        <span className="text-surface-200 font-medium tabular-nums font-sans">
-                                            {index === history.length - 1 - 0
-                                                ? entry.totalHours.toFixed(2)
-                                                : [...history].reverse()[index - 1]?.totalHours.toFixed(2) ?? '—'
-                                            } hrs
+                        {/* Previous values (newest edit first) */}
+                        {(() => {
+                            // history is stored oldest-first in DB.
+                            // Each history[i] = the value BEFORE edit (i+1) happened.
+                            // reversed[0] is the most recent edit's "before" value.
+                            const reversed = [...history].reverse();
+                            return reversed.map((record, index) => {
+                                const date = new Date(record.updatedAt);
+                                const formatted = date.toLocaleString('en-IN', {
+                                    day: '2-digit',
+                                    month: 'short',
+                                    year: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit',
+                                    hour12: true,
+                                });
+
+                                // What did this value change to?
+                                // reversed[0] (newest edit) → changed to current entry.totalHours
+                                // reversed[1] → changed to reversed[0].totalHours
+                                // reversed[N] → changed to reversed[N-1].totalHours
+                                const changedTo = index === 0
+                                    ? entry.totalHours
+                                    : reversed[index - 1].totalHours;
+
+                                return (
+                                    <div
+                                        key={index}
+                                        className="flex items-center gap-3 p-3 rounded-lg bg-surface-700/30 border border-surface-700/50 hover:bg-surface-700/50 transition-colors"
+                                    >
+                                        <div className="w-2 h-2 rounded-full bg-surface-500 shrink-0" />
+                                        <div className="flex-1 min-w-0">
+                                            <span className="text-surface-300 font-medium tabular-nums font-sans">
+                                                {record.totalHours.toFixed(2)} hrs
+                                            </span>
+                                            <ArrowRight className="w-3 h-3 inline mx-2 text-surface-500" />
+                                            <span className="text-surface-200 font-medium tabular-nums font-sans">
+                                                {changedTo.toFixed(2)} hrs
+                                            </span>
+                                        </div>
+                                        <span className="text-xs text-surface-500 font-sans whitespace-nowrap">
+                                            {formatted}
                                         </span>
                                     </div>
-                                    <span className="text-xs text-surface-500 font-sans whitespace-nowrap">
-                                        {formatted}
-                                    </span>
-                                </div>
-                            );
-                        })}
+                                );
+                            });
+                        })()}
 
                         <p className="text-xs text-surface-500 text-center pt-2 font-sans">
                             {history.length} edit{history.length !== 1 ? 's' : ''} tracked (max 20)
