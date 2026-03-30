@@ -236,6 +236,7 @@ usage-monitoring/
 ├── README.md                        # Quick-start documentation
 ├── VERSION                          # Plain-text version file
 ├── .env.example                     # Template for server/.env
+├── roadmap.md                       # Feature roadmap + tentative future plans
 └── .gitignore                       # Ignores: node_modules, .env, dist, logs
 ```
 
@@ -513,8 +514,9 @@ See [CHANGELOG.md](CHANGELOG.md) for the full, detailed version history.
 
 ### Before ANY Change
 1. **Read `context.md` (this file) first** — no exceptions
-2. **Read `CHANGELOG.md`** to understand recent changes
-3. **Verify assumptions in code** — never assume behavior; open the file and check
+2. **Read `roadmap.md`** to understand planned and in-progress work
+3. **Read `CHANGELOG.md`** to understand recent changes
+4. **Verify assumptions in code** — never assume behavior; open the file and check
 
 ### Decision-Making Principles
 4. **Prefer minimal, safe changes** — smallest diff that achieves the goal
