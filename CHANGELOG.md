@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [0.0.12-dev] - 2026-03-31
+
+### Added (AI Context & Release Workflow)
+- **`context.md`:** Comprehensive project context document — single source of truth for AI agents and developers. Covers architecture, data flows, validation rules, API reference, design system, and all critical constraints.
+- **Deployment & Release Workflow (Section 17):** Formalized CI/CD-like release pipeline with pre-release checklists, versioning rules, git commit conventions, Render deployment notes, and safety rules.
+
+---
+
 ## [0.0.11-dev] - 2026-03-02
 
 ### Fixed (Phase 9 — Month-Scoped Validation & UX Polish)
