@@ -10,7 +10,7 @@ import AddEntryForm from './components/AddEntryForm.jsx';
 import MonthSelector from './components/MonthSelector.jsx';
 import EntriesTable from './components/EntriesTable.jsx';
 import MonthlyStatsCard from './components/MonthlyStatsCard.jsx';
-import SkeletonLoader from './components/LoadingSpinner.jsx';
+import SkeletonLoader from './components/SkeletonLoader.jsx';
 import MonthTransitionBanner from './components/MonthTransitionBanner.jsx';
 import ErrorFallback from './components/ErrorFallback.jsx';
 import EmptyState from './components/EmptyState.jsx';
@@ -22,6 +22,7 @@ function App() {
     entries,
     loading,
     error,
+    lastSynced,
     addEntry,
     updateEntry,
     deleteEntry,
@@ -156,7 +157,7 @@ function App() {
         <div className="max-w-5xl mx-auto px-4 py-8">
           <SkeletonLoader />
         </div>
-        <Footer />
+        <Footer lastSynced={lastSynced} />
       </div>
     );
   }
@@ -169,7 +170,7 @@ function App() {
         <div className="max-w-5xl mx-auto px-4 py-8">
           <ErrorFallback error={error} onRetry={refetch} />
         </div>
-        <Footer />
+        <Footer lastSynced={lastSynced} />
       </div>
     );
   }
@@ -236,7 +237,7 @@ function App() {
         )}
       </main>
 
-      <Footer />
+      <Footer lastSynced={lastSynced} />
 
       {/* Confirm Dialog */}
       <ConfirmDialog

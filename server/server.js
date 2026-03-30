@@ -33,6 +33,15 @@ app.use((req, res, next) => {
     next();
 });
 
+// Healthcheck endpoint (pre-warming, monitoring)
+app.get('/api/health', (req, res) => {
+    res.status(200).json({
+        status: 'ok',
+        uptime: Math.floor(process.uptime()),
+        timestamp: Date.now(),
+    });
+});
+
 // API routes
 app.use('/api/entries', entriesRouter);
 

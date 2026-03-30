@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [0.0.13-dev] - 2026-03-31
+
+### Changed (Stability + Consistency)
+- **Version Consolidation:** `client/package.json` and `server/package.json` now track the project version (previously stuck at `0.0.0` and `0.0.1`).
+- **File Rename:** `LoadingSpinner.jsx` → `SkeletonLoader.jsx` to match the actual exported component name.
+- **Constant Usage:** Replaced hardcoded `{750}` in `MonthlyStatsCard.jsx` with `FREE_HOUR_LIMIT` from `constants.js`.
+
+### Added
+- **Healthcheck Endpoint:** `GET /api/health` returns `{ status, uptime, timestamp }` — useful for Render cold-start pre-warming and monitoring.
+- **Last Synced Indicator:** Footer now displays "Synced just now / X min ago" with auto-refresh every 30 seconds.
+
+---
+
 ## [0.0.12-dev] - 2026-03-31
 
 ### Added (AI Context & Release Workflow)

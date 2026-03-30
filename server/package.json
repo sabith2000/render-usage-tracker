@@ -1,6 +1,6 @@
 {
     "name": "render-usage-monitor-server",
-    "version": "0.0.1",
+    "version": "0.0.13-dev",
     "description": "Express backend for Render Free Usage Monitor",
     "type": "module",
     "main": "server.js",

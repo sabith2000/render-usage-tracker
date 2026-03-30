@@ -1,6 +1,6 @@
 {
     "name": "render-free-usage-monitor",
-    "version": "0.0.12-dev",
+    "version": "0.0.13-dev",
     "description": "Track monthly cumulative free instance hours on Render.com",
     "private": true,
     "scripts": {

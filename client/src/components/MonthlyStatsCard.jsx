@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { TrendingUp, TrendingDown, Clock, Target, AlertTriangle, PieChart, Minus } from 'lucide-react';
 import StatusBadge from './StatusBadge.jsx';
 import { computePreviousMonthAvg, getMonthlySparklineData } from '../utils/calculations.js';
+import { FREE_HOUR_LIMIT } from '../utils/constants.js';
 
 /**
  * Sparkline — Simple SVG sparkline for visualizing usage trend.
@@ -234,7 +235,7 @@ function MonthlyStatsCard({ stats, monthLabel, entries, selectedMonth, selectedY
 
                 <div className="flex justify-between text-xs text-surface-500 mt-1 font-sans">
                     <span>0 hrs</span>
-                    <span>{750} hrs Limit</span>
+                    <span>{FREE_HOUR_LIMIT} hrs Limit</span>
                 </div>
             </div>
         </div>

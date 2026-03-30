@@ -37,6 +37,7 @@ export function useEntries() {
     const [entries, setEntries] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [lastSynced, setLastSynced] = useState(null);
 
     /**
      * Fetch all entries from the API.
@@ -47,6 +48,7 @@ export function useEntries() {
             setError(null);
             const data = await api.getEntries();
             setEntries(sortEntries(data));
+            setLastSynced(new Date());
         } catch (err) {
             const message = api.getErrorMessage(err);
             setError(message);
@@ -142,6 +144,7 @@ export function useEntries() {
         entries,
         loading,
         error,
+        lastSynced,
         addEntry,
         updateEntry,
         deleteEntry,
